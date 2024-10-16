@@ -15,7 +15,7 @@
     
 <x-shell.page class="flex flex-col gap-8" 
 x-data="{ showUserForm : false }" 
-x-on:updated-user.window="$dispatch('open-user-form'); setTimeout(() => $dispatch('open-modal', 'password-generation'), 100)"
+x-on:updated-user.window="$dispatch('close-user-form'); setTimeout(() => $dispatch('open-modal', 'password-generation'), 100)"
 >
 
     <x-modal name="password-generation" :show="isset($password)" focusable>
@@ -109,47 +109,74 @@ x-on:updated-user.window="$dispatch('open-user-form'); setTimeout(() => $dispatc
         </form>
     </div>
 
-    <x-table :columns="['Clave', 'Email', 'Nombre', 'Rol', 'Acciones']">
-        @foreach ($users as $user)
-            <x-table.row x-data="{{ json_encode(['role' => __($user->role->value)]) }}"
-            x-on:role-updated="role === $event.detail.translated || 
-            (role = $event.detail.translated, $wire.updateRole({{ $user->id }}, $event.detail.value))"
-            >
-                <x-table.column>{{ $user->key }}</x-table>
-                <x-table.column>{{ $user->email }}</x-table>
-                <x-table.column>{{ $user->name }}</x-table>
-                <x-table.column >
-                    <x-dropdown>
-                        <x-slot:trigger>
-                            <button 
-                            x-text="role"
-                            type="button"></button>
-                        </x-slot>
-                        <x-slot:content>
-                            @foreach (Role::cases() as $role)
-                                <x-dropdown-link class="cursor-pointer" x-on:click="
-                                $dispatch('role-updated', {value: '{{ $role->value }}', 'translated': '{{ __($role->value) }}'});">
-                                    {{ __($role->value) }}
-                                </x-dropdown-link>
-                            @endforeach
-                        </x-slot>
-                    </x-dropdown>
+    @if (count($users) == 0)
+        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg flex items-center justify-center gap-8">
+            <x-application-logo class="block h-16 w-auto fill-current text-gray-800 dark:text-gray-200" />
+            
+            <header>
+                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {{ __('No Users Available') }}
+                </h2>
+                
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {{ __('There are no users listed at the moment. Please check back later or add a new user to get started.') }}
+                </p>
+
+                <div class="mt-2">
+                    <x-primary-button x-on:click="showUserForm = true">
+                        {{ __('Add Users') }}
+                    </x-primary-button>
+                </div>
+                
+            </header>    
+        </div>
+    @else 
+        <x-table :columns="['Clave', 'Email', 'Nombre', 'Rol', 'Acciones']">
+            @foreach ($users as $user)
+                <x-table.row x-data="{{ json_encode(['role' => __($user->role->value)]) }}"
+                x-on:role-updated="role === $event.detail.translated || 
+                (role = $event.detail.translated, $wire.updateRole({{ $user->id }}, $event.detail.value))"
+                >
+                    <x-table.column>{{ $user->key }}</x-table>
+                    <x-table.column>{{ $user->email }}</x-table>
+                    <x-table.column>{{ $user->name }}</x-table>
+                    <x-table.column >
+                        <x-dropdown>
+                            <x-slot:trigger>
+                                <button 
+                                x-text="role"
+                                type="button"></button>
+                            </x-slot>
+                            <x-slot:content>
+                                @foreach (Role::cases() as $role)
+                                    <x-dropdown-link class="cursor-pointer" x-on:click="
+                                    $dispatch('role-updated', {value: '{{ $role->value }}', 'translated': '{{ __($role->value) }}'});">
+                                        {{ __($role->value) }}
+                                    </x-dropdown-link>
+                                @endforeach
+                            </x-slot>
+                        </x-dropdown>
+                    </x-table>
+                    <x-table.column class="flex gap-2 items-center justify-center">
+                        <x-primary-button 
+                        wire:click="loadUser({{ $user->id }})"
+                        >
+                            <x-heroicon-s-pencil class="w-4 h-4"/>
+                        </x-secondary-button>
+                        <x-danger-button 
+                        wire:confirm="{{ __('Are you sure you want to delete this user?') }}"
+                        wire:click="delete({{ $user->id }})"
+                        >
+                            <x-heroicon-s-trash class="w-4 h-4"/>
+                        </x-danger-button>
+                    </x-table>
                 </x-table>
-                <x-table.column class="flex gap-2 items-center justify-center">
-                    <x-primary-button 
-                    wire:click="loadUser({{ $user->id }})"
-                    >
-                        <x-heroicon-s-pencil class="w-4 h-4"/>
-                    </x-secondary-button>
-                    <x-danger-button 
-                    wire:confirm="{{ __('Are you sure you want to delete this user?') }}"
-                    wire:click="delete({{ $user->id }})"
-                    >
-                        <x-heroicon-s-trash class="w-4 h-4"/>
-                    </x-danger-button>
-                </x-table>
-            </x-table>
-        @endforeach
-    </x-table>
+            @endforeach
+        </x-table>
+
+        <div>
+            {{ $users->links() }}
+        </div>
+    @endif
 </x-shell>
             

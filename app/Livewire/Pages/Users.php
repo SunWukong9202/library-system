@@ -8,10 +8,13 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 #[Layout('layouts.app')]
 class Users extends Component
 {
+    use WithPagination;
+
     public UserForm $form;
 
     public $password;
@@ -35,6 +38,12 @@ class Users extends Component
     public function delete(User $user): void
     {
         $user->delete();
+        
+        $this->form->pull();
+
+        $this->resetPage();
+
+        $this->js("alert('Usuario eliminado')");
     }
 
     public function test(): void
@@ -46,6 +55,7 @@ class Users extends Component
     {
         $this->password = $this->form->generatePassword();
         $name = $this->save();
+
         $this->dispatch('updated-user');
     }
 
@@ -79,7 +89,7 @@ class Users extends Component
     public function render()
     {
         return view('livewire.pages.users', [
-            'users' => User::all(),
+            'users' => User::paginate(6),
         ]);
     }
 }

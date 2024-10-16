@@ -11,6 +11,8 @@ class Course extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function applicants(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'inscriptions', 'course_id', 'student_id')
