@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Enums\Role;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        foreach(Role::cases() as $role) 
+        {
+            Gate::define($role, function (User $user) use ($role) {
+                return $user->role == $role;
+            });
+        }
     }
 }

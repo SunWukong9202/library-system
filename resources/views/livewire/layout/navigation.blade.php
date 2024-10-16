@@ -15,7 +15,7 @@ new class extends Component
         $this->redirect('/', navigate: true);
     }
 }; ?>
-
+@use('App\Enums\Role')
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,6 +33,14 @@ new class extends Component
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @can(Role::Admin)
+                        <x-nav-link :href="route('users')" :active="request()->routeIs('users')" wire:navigate>
+                            {{ __('Users') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('courses')" :active="request()->routeIs('courses')" wire:navigate>
+                            {{ __('Courses') }}
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -84,6 +92,16 @@ new class extends Component
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @can(Role::Admin)
+                <x-responsive-nav-link :href="route('users')" :active="request()->routeIs('users')" wire:navigate>
+                    {{ __('Users') }}
+                </x-responsive-nav-link>
+                
+                <x-responsive-nav-link :href="route('courses')" :active="request()->routeIs('courses')" wire:navigate>
+                    {{ __('Courses') }}
+                </x-responsive-nav-link>        
+            @endcan
+            
         </div>
 
         <!-- Responsive Settings Options -->

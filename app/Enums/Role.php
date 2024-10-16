@@ -11,4 +11,11 @@ enum Role: string {
     {
         return "messages" . $this->name ;
     }
+
+    public function permissions(): array 
+    {
+        return [
+            
+        ];
+    }
 }

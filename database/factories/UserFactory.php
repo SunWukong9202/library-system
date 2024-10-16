@@ -30,8 +30,6 @@ class UserFactory extends Factory
         return [
             'key' => fake()->unique()->regexify('[0-9]{6}'),
             'name' => fake()->name(),
-            'pat_surname' => fake()->lastName(),
-            'mat_surname' => fake()->lastName(),
             'role' => fake()->randomElement(Role::cases()),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),

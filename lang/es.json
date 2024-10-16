@@ -1,5 +1,24 @@
 {
+    "Users": "Usuarios",
+    "student": "Estudiante",
+    "teacher": "Profesor",
+    "admin": "Administrador",
+    "Role": "Rol",
+    "Hide": "ocultar",
+    "key": "Clave",
+    "email": "Correo",
+    "See Form": "Ver Formulario",
+    "Edit User Form": "Formulario de edicion",
+    "Edit": "Editar",
+    "Create": "Crear",
+    "Create User Form": "Formulario de creacion de usuario",
+    "Please fill all the fields required (they are specified with a *)": "Por favor llena todos los campos obligatorios (Aquellos especificados con un *)",
+    "Courses": "Materias",
     "Email": "Correo",
+    "Key": "Clave",
+    "Schedule": "Horario",
+    "Credits": "Creditos",
+    "Grade": "Calificacion",
     "Password": "Contraseña",
     "Remember me": "Recordarme",
     "Register me": "Registrarme",
@@ -39,6 +58,8 @@
 
     "Are you sure you want to delete your account?": "¿Estás seguro de que deseas eliminar tu cuenta?",
 
+    "Are you sure you want to delete this user?": "¿Estás seguro de que deseas eliminar este usuario?",
+
     "This is a secure area of the application. Please confirm your password before continuing.": "Esta es un área segura de la aplicación. Por favor, confirma tu contraseña antes de continuar.",
 
     "Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.": "¿Olvidaste tu contraseña? No hay problema. Solo háznoslo saber con tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña que te permitirá elegir una nueva.",
@@ -52,4 +73,5 @@
     "Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": "Una vez que tu cuenta sea eliminada, todos sus recursos y datos serán eliminados permanentemente. Por favor, ingresa tu contraseña para confirmar que deseas eliminar tu cuenta de forma permanente.",
 
     "Ensure your account is using a long, random password to stay secure.": "Asegúrate de que tu cuenta esté utilizando una contraseña larga y aleatoria para mantenerla segura."
+
 }

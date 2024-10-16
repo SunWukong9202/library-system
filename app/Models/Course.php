@@ -13,14 +13,6 @@ class Course extends Model
 
     public function applicants(): BelongsToMany
     {
-        // return $this->belongsToMany(
-        //     User::class,
-        //     table: 'inscriptions',
-        //     foreignPivotKey: 'course_id',
-        //     relatedPivotKey: 'student_id',
-        // )->withPivot('status')
-        //  ->withTimestamps()
-        //  ->as('inscription');
         return $this->belongsToMany(User::class, 'inscriptions', 'course_id', 'student_id')
             ->as('inscription')->withPivot('status')->withTimestamps()
             ->using(Inscription::class);

@@ -23,7 +23,6 @@ class User extends Authenticatable
     protected $fillable = [
         'key',
         'name',
-        'pat_surname', 'mat_surname',
         'role',
         'email',
         'password',
@@ -52,14 +51,6 @@ class User extends Authenticatable
 
     public function applications(): BelongsToMany
     {
-        // return $this->belongsToMany(
-        //     Course::class,
-        //     table: 'inscriptions',
-        //     foreignPivotKey: 'student_id',
-        //     relatedPivotKey: 'course_id'
-        // )->as('inscription')
-        // ->withPivot('status')
-        // ->withTimestamps();
         return $this->belongsToMany(Course::class, 'inscriptions', 'student_id', 'course_id')
             ->as('inscription')->withPivot('status')->withTimestamps()
             ->using(Inscription::class);
