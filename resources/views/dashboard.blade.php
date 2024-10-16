@@ -12,24 +12,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("You're logged in!") }}
-
-                    @can(Role::Student)
-                        <div class="text-red-500 text-sm">
-                            This is a student
-                        </div>
-                    @endcan
-
-                    @can(Role::Teacher)
-                    <div class="text-red-500 text-sm">
-                        Im a teacher
-                    </div>
-                    @endcan
-
-                    @can(Role::Admin)
-                    <div class="text-red-500 text-sm">
-                        Im an admin
-                    </div>
-                    @endcan
+                    
                 </div>
             </div>
         </div>

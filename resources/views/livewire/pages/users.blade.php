@@ -6,19 +6,17 @@
             {{ __('Users') }}
         </h2>
         
-        <x-primary-button x-on:click="$dispatch('open-user-form')">
+        <x-primary-button x-on:click="$dispatch('open-form', 'form-user')">
             {{ __('See Form') }}
         </x-primary-button>
     </div>
 </x-slot>
 
     
-<x-shell.page class="flex flex-col gap-8" 
-x-data="{ showUserForm : false }" 
-x-on:updated-user.window="$dispatch('close-user-form'); setTimeout(() => $dispatch('open-modal', 'password-generation'), 100)"
+<x-shell.page class="flex flex-col gap-8" x-data
+{{-- x-on:updated-user.window="$dispatch('close-form', 'form-user'); setTimeout(() => $dispatch('open-modal', 'password-generation'), 100)" --}}
 >
-
-    <x-modal name="password-generation" :show="isset($password)" focusable>
+    <x-modal name="password-generation" :show="isset($form->generated_password)" focusable>
         <div class="p-6">
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ __('Password generated!') }}
@@ -30,7 +28,7 @@ x-on:updated-user.window="$dispatch('close-user-form'); setTimeout(() => $dispat
 
             <div class="mt-6">
                 <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-                <x-input-clipboard :content="$password"></x-input-clipboard>
+                <x-input-clipboard :content="$form->generated_password"></x-input-clipboard>
             </div>
 
             <div class="mt-6 flex justify-end">
@@ -41,73 +39,7 @@ x-on:updated-user.window="$dispatch('close-user-form'); setTimeout(() => $dispat
         </div>
     </x-modal>
 
-    <div 
-    x-show="showUserForm"
-    x-on:open-user-form.window="showUserForm = true";
-    x-on:close-user-form.window="showUserForm = false";
-    {{-- x-on:create-user.window="showUserForm = true" --}}
-    class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-        <header>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ isset($form->user) ? __('Edit User Form') : __('Create User Form') }}
-            </h2>
-    
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Please fill all the fields required (they are specified with a *)') }}
-            </p>
-        </header>
-
-        @isset($form->user)
-        <div class="mt-6 flex flex-col gap-2">
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {{ __('If you just want to generate a new password for this user click below') }}
-            </p>
-            <x-primary-button class="w-max" wire:click="regenerate">
-                Regenerate Password
-            </x-primary-button>
-        </div>
-        @endisset
-
-        <form class="max-w-xl space-y-6 mt-6" wire:submit="{{ isset($form->user) ? 'update' : 'create' }}"> 
-            <div class="text-white">
-                <x-input-label for="name" :value="__('Name').' *'" />
-                <x-text-input wire:model="form.name" id="name" name="name" type="text" class="mt-1 block w-full" required autofocus autocomplete="name" />
-                <x-input-error class="mt-2" :messages="$errors->get('form.name')" />
-            </div>
-
-            <div>
-                <x-input-label for="email" :value="__('Email').' *'" />
-                <x-text-input wire:model="form.email" id="email" name="email" type="email" class="mt-1 block w-full" required autocomplete="email" />
-                <x-input-error class="mt-2" :messages="$errors->get('form.email')" />
-            </div>
-
-            <div> 
-                <x-input-label for="key" :value="__('Key').' *'" />
-                <x-text-input x-mask="999999" wire:model="form.key" id="key" name="key" type="text" class="mt-1 block w-full" required autofocus autocomplete="key" />
-                <x-input-error class="mt-2" :messages="$errors->get('form.key')" />
-            </div>
-
-            <div>
-                <x-input-label for="role" :value="__('Role').' *'" />
-                <x-select id="role" wire:model="form.role">
-                    @foreach (Role::cases() as $role)
-                        <option value="{{ $role }}">{{ __($role->value) }}</option>
-                    @endforeach
-                </x-select>
-                <x-input-error class="mt-2" :messages="$errors->get('form.role')" />
-            </div>
-
-            <div class="flex gap-8">
-                <x-secondary-button x-on:click="showUserForm = false">
-                    {{ __('Hide') }}
-                </x-secondary-button>
-                <x-primary-button>
-                    {{ isset($form->user) ? __('Edit') :__('Create') }}
-                </x-primary-button>
-            </div>
-
-        </form>
-    </div>
+    <x-form.user name="form-user" :$form/>
 
     @if (count($users) == 0)
         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg flex items-center justify-center gap-8">
@@ -159,13 +91,13 @@ x-on:updated-user.window="$dispatch('close-user-form'); setTimeout(() => $dispat
                     </x-table>
                     <x-table.column class="flex gap-2 items-center justify-center">
                         <x-primary-button 
-                        wire:click="loadUser({{ $user->id }})"
+                        wire:click="proxyAction('load', {{ $user->id }})"
                         >
                             <x-heroicon-s-pencil class="w-4 h-4"/>
                         </x-secondary-button>
                         <x-danger-button 
                         wire:confirm="{{ __('Are you sure you want to delete this user?') }}"
-                        wire:click="delete({{ $user->id }})"
+                        wire:click="proxyAction('delete', {{ $user->id }})"
                         >
                             <x-heroicon-s-trash class="w-4 h-4"/>
                         </x-danger-button>

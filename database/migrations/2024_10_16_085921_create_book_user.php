@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inscriptions', function (Blueprint $table) {
-            $table->foreignId('student_id')
-                  ->constrained(table: 'users')
+        //This table is mean to be used as a transaction, to indicate borrows and returns
+        Schema::create('book_user', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')
+                  ->constrained()
                   ->cascadeOnDelete();
-            $table->foreignId('course_id')
-                  ->constrained(table: 'courses')
+            $table->foreignId('book_id')
+                  ->constrained()
                   ->cascadeOnDelete();
 
-            $table->string('status', 1);//pendiente, aprobada, rechazada        
+            $table->boolean('type')->default(0);
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inscriptions');
+        Schema::dropIfExists('book_user');
     }
 };

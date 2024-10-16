@@ -53,12 +53,81 @@ class UserForm extends Form
         $this->generated_password = null;
     }
 
+    public function regenerate(): void
+    {
+        $this->generatePassword();
+
+        $this->save();
+
+        $this->component?->js(
+            '$dispatch("close-form", "form-user");'.
+            '$dispatch("open-modal", "password-generation")'
+        );
+    }
+
     public function generatePassword() {
         $this->generated_password = Str::password(12);
         return $this->generated_password;
     }
 
-    public function save(): void
+    public function handleAction($name, User $user) 
+    {
+        match($name) {
+            'load' => $this->load($user),
+            'delete' => $this->delete($user),
+            'create' => $this->create(),
+            'update' => $this->update(),
+            'regenerate' => $this->regenerate()
+        };
+    }
+
+    public function load(User $user): void
+    {
+        $this->setUser($user);
+
+        $this->component?->js('$dispatch("open-form", "form-user")');
+    }
+
+    public function delete(User $user): void
+    {
+        $user->delete();
+        
+        $this->pull();
+
+        $this->component?->resetPage();
+
+        $this->component?->js(
+            '$dispatch("close-form", "form-user");'.
+            "alert('Usuario eliminado')"
+        );
+    }
+
+    public function create(): void
+    {
+        $this->password = $this->generatePassword();
+        $name = $this->save();
+
+        $this->pull();
+        
+        $this->component?->js(
+            '$dispatch("close-form", "form-user");'.
+            "alert('Usuario $name creado!')"
+        );
+    }
+
+    public function update(): void
+    {        
+        $name = $this->save();
+
+        $this->pull();
+
+        $this->component->js(
+            "alert('Usuario $name editado!');".
+            '$dispatch("close-form", "form-user")'
+        );
+    }
+
+    public function save(): string
     {
         $remove = ['generated_password', 'user'];
 
@@ -74,5 +143,7 @@ class UserForm extends Form
             ['id' => $this->user?->id],
             $this->except($remove)
         );
+
+        return $this->name;
     }
 }

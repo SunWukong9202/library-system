@@ -17,64 +17,9 @@ class Users extends Component
 
     public UserForm $form;
 
-    public $password;
- 
-    public function loadUser(User $user): void
+    public function proxyAction($name, User $user = null): void
     {
-        $this->form->setUser($user);
-
-        $this->dispatch('open-user-form');
-    }
-
-    public function regenerate(): void
-    {
-        $this->password = $this->form->generatePassword();
-
-        $this->save();
-
-        $this->dispatch('updated-user');
-    }
-
-    public function delete(User $user): void
-    {
-        $user->delete();
-        
-        $this->form->pull();
-
-        $this->resetPage();
-
-        $this->js("alert('Usuario eliminado')");
-    }
-
-    public function test(): void
-    {
-        $this->dispatch('created-user');
-    }
-
-    public function create(): void
-    {
-        $this->password = $this->form->generatePassword();
-        $name = $this->save();
-
-        $this->dispatch('updated-user');
-    }
-
-    public function save(): string
-    {
-        $this->form->save();
-
-        $name = $this->form->name;
-
-        $this->form->pull();
-
-        return $name;
-    }
-
-    public function update(): void
-    {        
-        $name = $this->form->save();
-
-        $this->js("alert('Usuario $name editado!');".'$dispatch("close-user-form")');
+        $this->form->handleAction($name, $user);
     }
 
     public function updateRole(User $user, $role): void

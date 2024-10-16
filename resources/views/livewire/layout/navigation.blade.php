@@ -37,8 +37,8 @@ new class extends Component
                         <x-nav-link :href="route('users')" :active="request()->routeIs('users')" wire:navigate>
                             {{ __('Users') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('courses')" :active="request()->routeIs('courses')" wire:navigate>
-                            {{ __('Courses') }}
+                        <x-nav-link :href="route('books')" :active="request()->routeIs('books')" wire:navigate>
+                            {{ __('Books') }}
                         </x-nav-link>
                     @endcan
                 </div>
@@ -97,8 +97,8 @@ new class extends Component
                     {{ __('Users') }}
                 </x-responsive-nav-link>
                 
-                <x-responsive-nav-link :href="route('courses')" :active="request()->routeIs('courses')" wire:navigate>
-                    {{ __('Courses') }}
+                <x-responsive-nav-link :href="route('books')" :active="request()->routeIs('books')" wire:navigate>
+                    {{ __('Books') }}
                 </x-responsive-nav-link>        
             @endcan
             

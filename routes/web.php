@@ -1,7 +1,7 @@
 <?php
 
+use App\Livewire\Pages\Books;
 use App\Livewire\Pages\Users;
-use App\Livewire\Pages\Courses;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'login');
@@ -17,10 +17,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('users', Users::class)
         ->name('users');
 
-    Route::get('courses', Courses::class)
-        ->name('courses');
-    
-
+    Route::get('books', Books::class)
+        ->name('books');
 });
 
 

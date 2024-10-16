@@ -22,14 +22,8 @@ class DatabaseSeeder extends Seeder
         ]);
         
         User::factory()->create([
-            'role' => Role::Teacher,
-            'email' => 'teacher@gmail.com'
+            'role' => Role::Librarian,
+            'email' => 'librarian@gmail.com'
         ]);
-
-        User::factory()->create([
-            'role' => Role::Student,
-            'email' => 'student@gmail.com'
-        ]);
-
     }
 }

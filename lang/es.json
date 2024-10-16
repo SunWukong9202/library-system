@@ -1,6 +1,8 @@
 {
     "Users": "Usuarios",
+    "Books": "Libros",
     "student": "Estudiante",
+    "librarian": "Bibliotecario",
     "teacher": "Profesor",
     "admin": "Administrador",
     "Edit Course Form": "Formulario de edicion",

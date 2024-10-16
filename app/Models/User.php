@@ -56,22 +56,12 @@ class User extends Authenticatable
             ->using(Inscription::class);
     }
 
-    public function teaches(): HasMany
+    public function books(): BelongsToMany
     {
-        return $this->hasMany(Course::class, 'teacher_id');
-    }
-
-    public function courses(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            Course::class,
-            table: 'grades',
-            foreignPivotKey: 'student_id',
-            relatedPivotKey: 'course_id'
-            //default to course_id
-        )->withPivot('grade')
-         ->withTimestamps()
-         ->as('period');
+        return $this->belongsToMany(Book::class)
+            ->as('transaction')
+            ->withPivot('type')
+            ->withTimestamps();
     }
 }
 
