@@ -49,13 +49,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function applications(): BelongsToMany
-    {
-        return $this->belongsToMany(Course::class, 'inscriptions', 'student_id', 'course_id')
-            ->as('inscription')->withPivot('status')->withTimestamps()
-            ->using(Inscription::class);
-    }
-
     public function books(): BelongsToMany
     {
         return $this->belongsToMany(Book::class)
