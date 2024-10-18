@@ -13,6 +13,7 @@ class Books extends Component
 {
     use WithPagination;
 
+
     public BookForm $form;
 
     public function proxyAction($name, Book $book = null): void

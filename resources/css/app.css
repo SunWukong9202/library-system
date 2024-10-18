@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+[custom-scrollbar] {
+    @apply overflow-auto;
+  }
+  
+  [custom-scrollbar]::-webkit-scrollbar {
+    @apply w-[8px] h-1;
+  }
+  
+  /* Light mode thumb */
+  [custom-scrollbar]::-webkit-scrollbar-thumb {
+    @apply bg-indigo-600 rounded;
+  }
+  
+  [custom-scrollbar]::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-300 !important;
+  }
+  
+  /* Light mode track (rail) */
+  [custom-scrollbar]::-webkit-scrollbar-track {
+    @apply bg-indigo-100 rounded;
+  }
+  
+  /* Dark mode thumb */
+  .dark [custom-scrollbar]::-webkit-scrollbar-thumb {
+    @apply bg-indigo-600;
+  }
+  
+  .dark [custom-scrollbar]::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-600 !important;
+  }
+  
+  /* Dark mode track (rail) */
+  .dark [custom-scrollbar]::-webkit-scrollbar-track {
+    @apply bg-gray-800;
+  }
+  
+  

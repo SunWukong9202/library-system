@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Book;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,9 +17,11 @@ class BookFactory extends Factory
      */
     public function definition(): array
     {
+        $isbn = Book::formatISBN(fake()->randomElement([fake()->isbn10(), fake()->isbn13()]));
+
         return [
             'title' => fake()->sentence(3),
-            'isbn' => fake()->randomElement([fake()->isbn10(), fake()->isbn13()]),
+            'isbn' => $isbn,
             'copies' => rand(2, 10),
         ];
     }

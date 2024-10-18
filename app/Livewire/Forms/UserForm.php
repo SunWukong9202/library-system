@@ -5,6 +5,7 @@ namespace App\Livewire\Forms;
 use Livewire\Form;
 use App\Enums\Role;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Str;
@@ -26,13 +27,17 @@ class UserForm extends Form
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'key' => [
                 'size:6',
                 Rule::unique('users')->ignore($this->user?->id),
             ],
-            'email' => Rule::unique('users')->ignore($this->user?->id)
         ];
+
+        if(Auth::user()->role == Role::Admin) {
+            $rules['email'] = Rule::unique('users')->ignore($this->user?->id);
+        }
+        return $rules;
     }
 
     public function validationAttributes(): array

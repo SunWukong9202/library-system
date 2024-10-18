@@ -37,7 +37,7 @@
                     {{ __('Mark the checkbox below if you want to fill an ISBN 13') }}
                     <div class="block">
                         <label for="isbn13" class="inline-flex items-center">
-                            <input 
+                         <input 
                             x-on:change="$wire.form.isbn = ''; checksum = ''"
                             wire:model="form.isbn13" id="isbn13" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
                             <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('ISBN 13') }}</span>

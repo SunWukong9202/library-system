@@ -5,7 +5,7 @@
 ])
 @use('App\Enums\Role')
 
-<x-form.showable :$name :$show>
+<x-form.showable :$name :$show :$attributes>
     <header>
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
             {{ isset($form->user) ? __('Edit User Form') : __('Create User Form') }}
@@ -36,27 +36,30 @@
             <x-input-error class="mt-2" :messages="$errors->get('form.name')" />
         </div>
 
-        <div>
-            <x-input-label for="email" :value="__('Email').' *'" />
-            <x-text-input wire:model="form.email" id="email" name="email" type="email" class="mt-1 block w-full" required autocomplete="email" />
-            <x-input-error class="mt-2" :messages="$errors->get('form.email')" />
-        </div>
+        @can(Role::Admin)
+            <div>
+                <x-input-label for="email" :value="__('Email').' *'" />
+                <x-text-input wire:model="form.email" id="email" name="email" type="email" class="mt-1 block w-full" required autocomplete="email" />
+                <x-input-error class="mt-2" :messages="$errors->get('form.email')" />
+            </div>
+        @endcan
 
         <div> 
             <x-input-label for="key" :value="__('Key').' *'" />
             <x-text-input x-mask="999999" wire:model="form.key" id="key" name="key" type="text" class="mt-1 block w-full" required autofocus autocomplete="key" />
             <x-input-error class="mt-2" :messages="$errors->get('form.key')" />
         </div>
-
-        <div>
-            <x-input-label for="role" :value="__('Role').' *'" />
-            <x-select id="role" wire:model="form.role">
-                @foreach (Role::cases() as $role)
-                    <option value="{{ $role }}">{{ __($role->value) }}</option>
-                @endforeach
-            </x-select>
-            <x-input-error class="mt-2" :messages="$errors->get('form.role')" />
-        </div>
+        @can(Role::Admin)
+            <div>
+                <x-input-label for="role" :value="__('Role').' *'" />
+                <x-select id="role" wire:model="form.role">
+                    @foreach (Role::cases() as $role)
+                        <option value="{{ $role }}">{{ __($role->value) }}</option>
+                    @endforeach
+                </x-select>
+                <x-input-error class="mt-2" :messages="$errors->get('form.role')" />
+            </div>
+        @endcan
 
         <div class="flex gap-8">
             <x-secondary-button x-on:click="$dispatch('close')">

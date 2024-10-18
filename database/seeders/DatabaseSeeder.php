@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\Role;
+use App\Models\Book;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -25,5 +26,12 @@ class DatabaseSeeder extends Seeder
             'role' => Role::Librarian,
             'email' => 'librarian@gmail.com'
         ]);
+
+        User::factory()->count(10)->create([
+            'role' => Role::Student,
+            'email' => null,
+        ]);
+
+        Book::factory()->count(10)->create();
     }
 }

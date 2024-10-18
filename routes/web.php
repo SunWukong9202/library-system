@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Pages\Books;
+use App\Livewire\Pages\Transactions;
 use App\Livewire\Pages\Users;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::get('books', Books::class)
         ->name('books');
+
+    Route::get('transaction', Transactions::class)
+        ->name('transactions');
 });
 
 

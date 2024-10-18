@@ -40,6 +40,18 @@ new class extends Component
                         <x-nav-link :href="route('books')" :active="request()->routeIs('books')" wire:navigate>
                             {{ __('Books') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('transactions')" :active="request()->routeIs('transactions')" wire:navigate>
+                            {{ __('Movements') }}
+                        </x-nav-link>
+                    @endcan
+
+                    @can(Role::Librarian)
+                        <x-nav-link :href="route('transactions')" :active="request()->routeIs('transactions')" wire:navigate>
+                            {{ __('Movements') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('books')" :active="request()->routeIs('books')" wire:navigate>
+                            {{ __('Books') }}
+                        </x-nav-link>
                     @endcan
                 </div>
             </div>
