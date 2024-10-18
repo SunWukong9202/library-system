@@ -58,5 +58,10 @@ class User extends Authenticatable
             ->withPivot('type')
             ->withTimestamps();
     }
+
+    public static function groupBy(): void
+    {
+        
+    }
 }
 

@@ -7,7 +7,8 @@ use App\Enums\Transaction;
 use App\Livewire\Forms\UserForm;
 use App\Models\Book;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
+use App\Utils\WithReadableDates;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -16,7 +17,7 @@ use Livewire\WithPagination;
 #[Layout('layouts.app')]
 class Transactions extends Component
 {
-    use WithPagination;
+    use WithPagination, WithReadableDates;
 
     private $searchUserBy = ['key', 'name'];
     private $searchBookBy = ['isbn', 'title'];
@@ -41,17 +42,38 @@ class Transactions extends Component
             'students' => User::where('role', Role::Student)
                 ->search($this->userTerm, $this->searchUserBy)
                 ->paginate(4, pageName: 'students'),
-            'users' => User::whereHas('books')->with([
-                'books' => function($q) { $q->limit(1); }
-            ])->withCount([
-                'books as borrow_count' => function($q) {
-                     $q->where('type', Transaction::Borrow);
-                },      
-                'books as return_count' => function($q) { 
-                    $q->where('type', Transaction::Return);
-                }
-            ])->paginate(6),
+            'transactions' => User::select('id','name', 'key', 'role')
+                ->whereHas('books')
+                ->with('books:id,title,isbn')
+                ->paginate(2),
         ]);
+    }
+
+    // 'users' => User::whereHas('books')->with([
+    //             'books' => function(Builder $q) { $q->groupBy('book_id')->limit(1); }
+    //         ])->withCount([
+    //             'books as borrow_count' => function($q) {
+    //                  $q->where('type', Transaction::Borrow);
+    //             },      
+    //             'books as return_count' => function($q) { 
+    //                 $q->where('type', Transaction::Return);
+    //             }
+    //         ])->paginate(6),
+
+//     > User::select('id', 'key', 'role')->whereHas('books')->with('books')->get()->
+// map(fn($user) => $user->books->map(function($book) use($user) { return ['user'
+//  => collect($user)->except(['books']), 'book' => collect(['type' => $book->tra
+// nsaction->type, 'date' => ])]; })->first());
+
+    public function registerReturn(User $user, Book $book): void
+    {
+        $book->increment('copies');
+        $user->books()->attach(
+            $book->id,
+            ['type' => Transaction::Return]
+        );
+
+        $this->js("alert('".trans('Return successfully registered!')."')");
     }
 
     public function registerBorrow(User $student)
@@ -60,7 +82,8 @@ class Transactions extends Component
             return $this->js("alert('Selecciona un estudiante y al menos un libro')");
         }
 
-        $exhaused = '';
+        $exhaused = ''; 
+        
         foreach($this->picks as $pick) {
             $book = Book::find($pick['id']);
             if(!$book) continue;

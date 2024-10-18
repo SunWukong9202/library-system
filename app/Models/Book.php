@@ -34,6 +34,11 @@ class Book extends Model
         }
         return $fmt;
     }
+
+    public function groupById(): void
+    {
+        # code...
+    }
 }
 
 

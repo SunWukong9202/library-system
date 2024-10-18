@@ -27,6 +27,7 @@
     </div>
 </x-slot>
 @use('App\Enums\Role')
+@use('App\Enums\Transaction')
 
 <x-shell.page 
 x-on:form-borrow="$wire.registerBorrow($wire.selected.id)"
@@ -207,7 +208,7 @@ class="flex flex-col gap-8" >
     </div>
     </x-form>
 
-    @if (count($users) == 0)
+    @if (count($transactions) == 0)
         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg flex items-center justify-center gap-8">
             <x-application-logo class="block h-16 w-auto fill-current text-gray-800 dark:text-gray-200" />
             
@@ -229,41 +230,54 @@ class="flex flex-col gap-8" >
             </header>    
         </div>
     @else 
-        <x-table :columns="['Clave', 'Alumno' ,'ISBN', 'Titulo', 'Copias', 'Tipo', 'Acciones']">
-            @foreach ($users as $user)
+        <x-table custom-scrollbar :columns="['Clave', 'Alumno' ,'ISBN', 'Titulo', 'Tipo', 'Fecha', 'Acciones']">
+            @foreach ($transactions->flatMap(fn($user) => $user->books->map(function($book) use ($user) { 
+                return [
+                    'user' => collect($user)->except(['books']), 'book' => $book
+                ];
+            })) as $transaction)
                 <x-table.row>
-                    <x-table.column>{{ $user->key }}</x-table>
-                    <x-table.column>{{ $user->name }}</x-table>
                     <x-table.column>
-                        {{ $user->books->first()->isbn }}
+                        {{ $transaction['user']['key'] }}
                     </x-table>
                     <x-table.column>
-                        {{ $user->books->first()->title }}
+                        {{ $transaction['user']['name'] }}
                     </x-table>
                     <x-table.column>
-                        {{ $user->borrow_count }}
+                        {{ $transaction['book']->isbn }}
+                    </x-table>
+                    <x-table.column>
+                        {{ $transaction['book']->title }}
                     </x-table>
 
                     <x-table.column>
-                        {{ $user->borrow_count }}
+                        {{ $this->formatTimestamp($transaction['book']->transaction->created_at) }}
                     </x-table>
-                
+
+                    <x-table.column>
+                        <x-badge :type="$transaction['book']->transaction->type">
+                            {{ $transaction['book']->transaction->type == Transaction::Borrow->value ? __('borrow') : __('return') }}
+                        </x-badge>
+                    </x-table>
                     <x-table.column class="flex gap-2 items-center justify-center">
-                        @if ($user->borrow_count == 0)
-                            {{ __('Borrow') }}                            
-                        @else
-                            <x-primary-button>
-                                {{ __('Return') }}
+                        @if ($transaction['book']->transaction->type == Transaction::Borrow->value)
+                            <x-primary-button 
+                            wire:confirm="{{ __('messages.book_returning', [
+                                'student' => $transaction['user']['name'],
+                                'book' => $transaction['book']->title,
+                                'copies' => 1
+                            ])}}"
+                            wire:click="registerReturn({{ $transaction['user']['id'] }}, {{ $transaction['book']->id }})">
+                                {{ __('Register a return') }}
                             </x-primary-button>
                         @endif
-
                     </x-table>
                 </x-table>
             @endforeach
         </x-table>
 
         <div>
-            {{ $users->links() }}
+            {{ $transactions->links() }}
         </div>
     @endif
 </x-shell>
