@@ -27,6 +27,10 @@ new #[Layout('layouts.guest')] class extends Component
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    @guest
+        <x-auth-session-status class="mb-4" :status="__('Admin user credentials loaded just login')" />        
+    @endguest
+
     <form wire:submit="login">
         <!-- Email Address -->
         <div>

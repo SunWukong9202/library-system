@@ -5,12 +5,12 @@ use App\Livewire\Pages\Transactions;
 use App\Livewire\Pages\Users;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'login');
+// Route::view('/', 'login');
 
 // Route::view('/welcome', 'welcome');
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
-    Route::view('/', 'dashboard')
+    Route::view('/dashboard', 'dashboard')
         ->name('dashboard');
 
     Route::view('profile', 'profile')

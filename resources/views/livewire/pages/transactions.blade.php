@@ -251,14 +251,15 @@ class="flex flex-col gap-8" >
                     </x-table>
 
                     <x-table.column>
-                        {{ $this->formatTimestamp($transaction['book']->transaction->created_at) }}
-                    </x-table>
-
-                    <x-table.column>
                         <x-badge :type="$transaction['book']->transaction->type">
                             {{ $transaction['book']->transaction->type == Transaction::Borrow->value ? __('borrow') : __('return') }}
                         </x-badge>
                     </x-table>
+
+                    <x-table.column>
+                        {{ $this->formatTimestamp($transaction['book']->transaction->created_at) }}
+                    </x-table>
+
                     <x-table.column class="flex gap-2 items-center justify-center">
                         @if ($transaction['book']->transaction->type == Transaction::Borrow->value)
                             <x-primary-button 

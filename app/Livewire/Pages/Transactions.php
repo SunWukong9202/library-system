@@ -68,6 +68,7 @@ class Transactions extends Component
     public function registerReturn(User $user, Book $book): void
     {
         $book->increment('copies');
+        
         $user->books()->attach(
             $book->id,
             ['type' => Transaction::Return]
