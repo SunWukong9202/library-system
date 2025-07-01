@@ -43,10 +43,24 @@ class Transactions extends Component
             'students' => User::where('role', Role::Student)
                 ->search($this->userTerm, $this->searchUserBy)
                 ->paginate(4, pageName: 'students'),
-            'transactions' => User::select('id','name', 'key', 'role')
-                ->whereHas('books')
-                ->with('books:id,title,isbn')
-                ->paginate(2),
+            'transactions' => DB::table('book_user')
+                ->join('users', 'book_user.user_id', '=', 'users.id')
+                ->join('books', 'book_user.book_id', '=', 'books.id')
+                ->select(
+                    'book_user.id as pivot_id',
+                    'book_user.type',
+                    'book_user.created_at as pivot_created_at',
+                    'book_user.updated_at as pivot_updated_at',
+                    'users.id as user_id',
+                    'users.name as user_name',
+                    'users.key as user_key',
+                    'users.role as user_role',
+                    'books.id as book_id',
+                    'books.title as book_title',
+                    'books.isbn as book_isbn'
+                )
+                ->orderByDesc('pivot_created_at')
+                ->paginate(10),
         ]);
     }
 

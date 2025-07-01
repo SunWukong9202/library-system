@@ -231,57 +231,50 @@ class="flex flex-col gap-8" >
         </div>
     @else 
         <x-table custom-scrollbar :columns="['Clave', 'Alumno' ,'ISBN', 'Titulo', 'Prestado', 'Devuelto', 'Acciones']">
-            @foreach ($transactions->flatMap(fn($user) => $user->books->map(function($book) use ($user) { 
-                return [
-                    'user' => collect($user)->except(['books']), 'book' => $book
-                ];
-            })) as $transaction)
+            @foreach ($transactions as $transaction)
                 <x-table.row>
                     <x-table.column>
-                        {{ $transaction['user']['key'] }}
-                    </x-table>
-                    <x-table.column>
-                        {{ $transaction['user']['name'] }}
-                    </x-table>
-                    <x-table.column>
-                        {{ $transaction['book']->isbn }}
-                    </x-table>
-                    <x-table.column>
-                        {{ $transaction['book']->title }}
-                    </x-table>
-
-                    {{-- <x-table.column>
-                        <x-badge :type="$transaction['book']->transaction->type">
-                            {{ $transaction['book']->transaction->type == Transaction::Borrow->value ? __('borrow') : __('return') }}
-                        </x-badge>
-                    </x-table> --}}
-                    
-                    <x-table.column>
-                        {{ $this->formatTimestamp($transaction['book']->transaction->created_at) }}
-                    </x-table>
+                        {{ $transaction->user_key }}
+                    </x-table.column>
 
                     <x-table.column>
-                        @if ($transaction['book']->transaction->type == Transaction::Borrow->value)
+                        {{ $transaction->user_name }}
+                    </x-table.column>
+
+                    <x-table.column>
+                        {{ $transaction->book_isbn }}
+                    </x-table.column>
+
+                    <x-table.column>
+                        {{ $transaction->book_title }}
+                    </x-table.column>
+
+                    <x-table.column>
+                        {{ $this->formatTimestamp($transaction->pivot_created_at) }}
+                    </x-table.column>
+
+                    <x-table.column>
+                        @if ($transaction->type == Transaction::Borrow->value)
                             Pendiente
                         @else
-                            {{ $this->formatTimestamp($transaction['book']->transaction->updated_at) }}
+                            {{ $this->formatTimestamp($transaction->pivot_updated_at) }}
                         @endif
-                    </x-table>
+                    </x-table.column>
 
                     <x-table.column class="flex gap-2 items-center justify-center">
-                        @if ($transaction['book']->transaction->type == Transaction::Borrow->value)
+                        @if ($transaction->type == Transaction::Borrow->value)
                             <x-primary-button 
-                            wire:confirm="{{ __('messages.book_returning', [
-                                'student' => $transaction['user']['name'],
-                                'book' => $transaction['book']->title,
-                                'copies' => 1
-                            ])}}"
-                            wire:click="registerReturn({{ $transaction['book']->transaction->id }}, {{ $transaction['book']->id }})">
+                                wire:confirm="{{ __('messages.book_returning', [
+                                    'student' => $transaction->user_name,
+                                    'book' => $transaction->book_title,
+                                    'copies' => 1
+                                ])}}"
+                                wire:click="registerReturn({{ $transaction->pivot_id }}, {{ $transaction->book_id }})">
                                 {{ __('Register a return') }}
                             </x-primary-button>
                         @endif
-                    </x-table>
-                </x-table>
+                    </x-table.column>
+                </x-table.row>
             @endforeach
         </x-table>
 
