@@ -6,7 +6,8 @@ use App\Livewire\Pages\Users;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'login');
-Route::view('/welcome', 'welcome');
+
+// Route::view('/welcome', 'welcome');
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::view('/', 'dashboard')
