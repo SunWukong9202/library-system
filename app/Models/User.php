@@ -55,7 +55,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Book::class)
             ->as('transaction')
-            ->withPivot('type')
+            ->withPivot('id', 'type')
             ->withTimestamps();
     }
 

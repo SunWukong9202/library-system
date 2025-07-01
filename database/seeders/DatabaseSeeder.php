@@ -8,6 +8,7 @@ use App\Models\Book;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -47,21 +48,36 @@ class DatabaseSeeder extends Seeder
                     $book->decrement('copies');
 
                     // Attach as borrow
+                    
+                    $created = now()->subDays(5, 15);
                     $student->books()->attach(
                         $book->id,
-                        ['type' => Transaction::Borrow]
+                        [
+                            'type' => Transaction::Borrow, 
+                            'created_at' => $created,
+                            'updated_at' => $created
+                        ]
                     );
+
+                    $pivot = DB::table('book_user')
+                        ->where('user_id', $student->id)
+                        ->where('book_id', $book->id)
+                        ->latest('id')
+                        ->first();
             
                     // 50% chance to return the book
                     if (rand(0, 1)) {
+                        
                         // Increment copies
                         $book->increment('copies');
 
                         // Attach as return
-                        $student->books()->attach(
-                            $book->id,
-                            ['type' => Transaction::Return]
-                        );
+                        DB::table('book_user')
+                            ->where('id', $pivot->id)
+                            ->update([
+                                'type' => Transaction::Return,
+                                'updated_at' => $created->addDays(rand(2, 3))
+                            ]);
                     }
                 }
             }

@@ -18,7 +18,7 @@ class Book extends Model
     {
         return $this->belongsToMany(User::class)
             ->as('transaction')
-            ->withPivot('type')
+            ->withPivot('id', 'type')
             ->withTimestamps();
     }
 

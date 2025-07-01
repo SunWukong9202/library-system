@@ -9,6 +9,7 @@ use App\Models\Book;
 use App\Models\User;
 use App\Utils\WithReadableDates;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -65,14 +66,16 @@ class Transactions extends Component
 //  => collect($user)->except(['books']), 'book' => collect(['type' => $book->tra
 // nsaction->type, 'date' => ])]; })->first());
 
-    public function registerReturn(User $user, Book $book): void
+    public function registerReturn(int $id, Book $book): void
     {
         $book->increment('copies');
         
-        $user->books()->attach(
-            $book->id,
-            ['type' => Transaction::Return]
-        );
+        DB::table('book_user')
+            ->where('id', $id)
+            ->update([
+                'type' => Transaction::Return,
+                'updated_at' => now()
+            ]);
 
         $this->js("alert('".trans('Return successfully registered!')."')");
     }
